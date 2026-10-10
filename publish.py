@@ -11,7 +11,9 @@
 import argparse, datetime, html, json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
-SITE_NAME = "오늘의 4분 뉴스"
+SITE_NAME = "클로이의 4분 뉴스"
+OLD_NAME = "오늘의 4분 뉴스"  # 메일 본문 속 이름. 웹에 올릴 때 SITE_NAME으로 바꿉니다.
+INSTA = "lamuneca1124"
 SITE_DESC = "평일 아침, 오늘 알아야 할 소식을 4분 안에 읽을 수 있게 정리해요."
 CFG = json.loads((ROOT / "site.json").read_text(encoding="utf-8"))
 BASE = CFG["base_url"].rstrip("/")          # 예: https://example.com
@@ -50,11 +52,12 @@ def shell(title, desc, path, body, extra_head=""):
 <body>
 <header class="site-bar"><div class="site-bar-in">
 <a href="{PREFIX}/">🍊 {SITE_NAME}</a>
-<nav><a href="{PREFIX}/">지난 호</a><a href="{PREFIX}/about.html">소개</a></nav>
+<nav><a href="{PREFIX}/archive.html">지난 호</a><a href="{PREFIX}/about.html">소개</a></nav>
 </div></header>
 {body}
 <footer class="site-foot">
-<a href="{PREFIX}/about.html">소개</a>·<a href="{PREFIX}/privacy.html">개인정보처리방침</a>
+<a href="{PREFIX}/archive.html">지난 호</a>·<a href="{PREFIX}/about.html">소개</a>·<a href="{PREFIX}/privacy.html">개인정보처리방침</a>
+<div>의견·문의는 인스타그램 <a href="https://www.instagram.com/{INSTA}/">@{INSTA}</a></div>
 <div>기사 요약은 각 언론사 보도를 바탕으로 직접 쓴 것이며, 원문 저작권은 해당 언론사에 있습니다.</div>
 </footer>
 </body>
@@ -73,6 +76,7 @@ def add_post(date, src, title, summary):
     m = re.search(r"<body[^>]*>(.*)</body>", raw, flags=re.S | re.I)
     inner = m.group(1) if m else raw
     inner = re.sub(r"<script.*?</script>", "", inner, flags=re.S | re.I)
+    inner = inner.replace(OLD_NAME, SITE_NAME)
     (ROOT / "posts").mkdir(exist_ok=True)
     (ROOT / "posts" / f"{date}.body.html").write_text(styles + "\n" + inner, encoding="utf-8")
     posts = [p for p in load_posts() if p["date"] != date]
@@ -96,6 +100,9 @@ def rebuild():
         (ROOT / "posts" / f"{d}.html").write_text(
             shell(f'{p["title"]} | {SITE_NAME}', p.get("summary") or p["title"], f"/posts/{d}.html", body),
             encoding="utf-8")
+        if i == 0:  # 첫 화면은 항상 최신호
+            (ROOT / "index.html").write_text(
+                shell(SITE_NAME, p.get("summary") or SITE_DESC, "/", body), encoding="utf-8")
 
     if posts:
         items = "\n".join(
@@ -105,16 +112,18 @@ def rebuild():
         listing = f'<ul class="list">\n{items}\n</ul>'
     else:
         listing = '<div class="empty">첫 호가 곧 올라와요.</div>'
-    body = f'<main class="wrap"><section class="hero"><h1>{SITE_NAME}</h1><p>{SITE_DESC}</p></section>\n' \
+    body = f'<main class="wrap"><section class="hero"><h1>지난 호</h1><p>{SITE_DESC}</p></section>\n' \
            f'<div class="ad">{part("ad-top.html")}</div>\n{listing}</main>'
-    (ROOT / "index.html").write_text(shell(SITE_NAME, SITE_DESC, "/", body), encoding="utf-8")
+    (ROOT / "archive.html").write_text(shell(f"지난 호 | {SITE_NAME}", SITE_DESC, "/archive.html", body), encoding="utf-8")
+    if not posts:
+        (ROOT / "index.html").write_text(shell(SITE_NAME, SITE_DESC, "/", body), encoding="utf-8")
 
     for name, title in (("about", "소개"), ("privacy", "개인정보처리방침")):
         src = (ROOT / "pages" / f"{name}.html").read_text(encoding="utf-8")
         body = f'<main class="wrap"><article class="page">{src}</article></main>'
         (ROOT / f"{name}.html").write_text(shell(f"{title} | {SITE_NAME}", title, f"/{name}.html", body), encoding="utf-8")
 
-    urls = [f"{BASE}{PREFIX}/"] + [f"{BASE}{PREFIX}/posts/{p['date']}.html" for p in posts] + \
+    urls = [f"{BASE}{PREFIX}/", f"{BASE}{PREFIX}/archive.html"] + [f"{BASE}{PREFIX}/posts/{p['date']}.html" for p in posts] + \
            [f"{BASE}{PREFIX}/about.html", f"{BASE}{PREFIX}/privacy.html"]
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
