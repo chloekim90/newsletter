@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://chloekim90.github.io/newsletter/sitemap.xml
