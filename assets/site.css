@@ -34,3 +34,5 @@ a{color:var(--orange)}
 .sub-agree{display:block;margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}
 .sub-done{margin:0!important;color:var(--ink)!important;font-weight:600}
 @media(max-width:640px){.sub{margin-left:16px;margin-right:16px}}
+.site-bar nav a.nav-sub{background:var(--orange);color:#fff;font-weight:700;padding:6px 12px;border-radius:999px;opacity:1;margin-left:12px}
+html{scroll-behavior:smooth}

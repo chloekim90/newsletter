@@ -68,7 +68,7 @@ def shell(title, desc, path, body, extra_head=""):
 <body>
 <header class="site-bar"><div class="site-bar-in">
 <a href="{PREFIX}/">🍊 {SITE_NAME}</a>
-<nav><a href="{PREFIX}/archive.html">지난 호</a><a href="{PREFIX}/about.html">소개</a></nav>
+<nav><a href="{PREFIX}/archive.html">지난 호</a><a href="{PREFIX}/about.html">소개</a><a class="nav-sub" href="{PREFIX}/#subscribe">구독</a></nav>
 </div></header>
 {body}
 <footer class="site-foot">
