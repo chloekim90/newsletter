@@ -14,6 +14,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 SITE_NAME = "클로이의 4분 뉴스"
 OLD_NAME = "오늘의 4분 뉴스"  # 메일 본문 속 이름. 웹에 올릴 때 SITE_NAME으로 바꿉니다.
 INSTA = "lamuneca1124"
+BODY_NAME = "오늘의 주요 이슈"  # 본문 머리의 큰 제목. 사이트 이름은 상단 바에만 씁니다.
 SITE_DESC = "평일 아침, 오늘 알아야 할 소식을 4분 안에 읽을 수 있게 정리해요."
 CFG = json.loads((ROOT / "site.json").read_text(encoding="utf-8"))
 BASE = CFG["base_url"].rstrip("/")          # 예: https://example.com
@@ -69,7 +70,7 @@ def shell(title, desc, path, body, extra_head=""):
 <body>
 <header class="site-bar"><div class="site-bar-in">
 <a href="{PREFIX}/">🍊 {SITE_NAME}</a>
-<nav><a href="{PREFIX}/archive.html">지난 호</a><a class="nav-sub" href="{PREFIX}/#subscribe">구독하기</a></nav>
+<nav><a href="{PREFIX}/archive.html">지난 호</a><a class="nav-sub" href="{PREFIX}/subscribe.html">구독하기</a></nav>
 </div></header>
 {body}
 <footer class="site-foot">
@@ -93,7 +94,7 @@ def add_post(date, src, title, summary):
     m = re.search(r"<body[^>]*>(.*)</body>", raw, flags=re.S | re.I)
     inner = m.group(1) if m else raw
     inner = re.sub(r"<script.*?</script>", "", inner, flags=re.S | re.I)
-    inner = inner.replace(OLD_NAME, SITE_NAME)
+    inner = inner.replace(OLD_NAME, BODY_NAME)
     (ROOT / "posts").mkdir(exist_ok=True)
     (ROOT / "posts" / f"{date}.body.html").write_text(styles + "\n" + inner, encoding="utf-8")
     posts = [p for p in load_posts() if p["date"] != date]
@@ -140,7 +141,11 @@ def rebuild():
         body = f'<main class="wrap"><article class="page">{src}</article></main>'
         (ROOT / f"{name}.html").write_text(shell(f"{title} | {SITE_NAME}", title, f"/{name}.html", body), encoding="utf-8")
 
-    urls = [f"{BASE}{PREFIX}/", f"{BASE}{PREFIX}/archive.html"] + [f"{BASE}{PREFIX}/posts/{p['date']}.html" for p in posts] + \
+    (ROOT / "subscribe.html").write_text(
+        shell(f"구독하기 | {SITE_NAME}", "평일 아침, 새 호를 메일로 받아보세요.", "/subscribe.html",
+              f'<main class="wrap">{subscribe()}</main>'), encoding="utf-8")
+
+    urls = [f"{BASE}{PREFIX}/", f"{BASE}{PREFIX}/archive.html", f"{BASE}{PREFIX}/subscribe.html"] + [f"{BASE}{PREFIX}/posts/{p['date']}.html" for p in posts] + \
            [f"{BASE}{PREFIX}/about.html", f"{BASE}{PREFIX}/privacy.html"]
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
