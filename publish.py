@@ -34,6 +34,7 @@ def subscribe():
 </form>
 <p id="sub-done" class="sub-done" hidden>구독 신청이 접수됐어요. 고마워요 🍊</p>
 <iframe name="sub-sink" title="구독 신청 전송" hidden></iframe>
+<p class="sub-contact">문의사항은 인스타그램 <a href="https://www.instagram.com/{INSTA}/">@{INSTA}</a>로 보내 주세요.</p>
 </section>"""
 
 
@@ -68,7 +69,7 @@ def shell(title, desc, path, body, extra_head=""):
 <body>
 <header class="site-bar"><div class="site-bar-in">
 <a href="{PREFIX}/">🍊 {SITE_NAME}</a>
-<nav><a href="{PREFIX}/archive.html">지난 호</a><a href="{PREFIX}/about.html">소개</a><a class="nav-sub" href="{PREFIX}/#subscribe">구독</a></nav>
+<nav><a href="{PREFIX}/archive.html">지난 호</a><a class="nav-sub" href="{PREFIX}/#subscribe">구독하기</a></nav>
 </div></header>
 {body}
 <footer class="site-foot">
