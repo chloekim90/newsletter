@@ -425,6 +425,16 @@
 
 </main>
 <div class="pager"><span></span><span></span></div>
+<section class="sub" id="subscribe">
+<h2>📮 매일 아침 메일로 받아보기</h2>
+<p>평일 아침, 새 호가 나오면 메일로 보내 드려요.</p>
+<form action="https://docs.google.com/forms/d/e/1FAIpQLSdNTGbedwztG0ilvurKCAuN6dsstf3iJfuM4GpcSY1Y450Z3A/formResponse" method="POST" target="sub-sink" onsubmit="var f=this;setTimeout(function(){f.hidden=true;document.getElementById('sub-done').hidden=false},400)">
+<div class="sub-row"><input type="email" name="entry.1234987478" placeholder="이메일 주소" required autocomplete="email" aria-label="이메일 주소"><button type="submit">구독하기</button></div>
+<label class="sub-agree"><input type="checkbox" required> 뉴스레터 발송을 위해 이메일 주소를 수집·이용하는 데 동의합니다. 구독 해지 시까지 보관하며, <a href="/newsletter/privacy.html">개인정보처리방침</a>을 따릅니다.</label>
+</form>
+<p id="sub-done" class="sub-done" hidden>구독 신청이 접수됐어요. 고마워요 🍊</p>
+<iframe name="sub-sink" title="구독 신청 전송" hidden></iframe>
+</section>
 <div class="ad"></div>
 <footer class="site-foot">
 <a href="/newsletter/archive.html">지난 호</a>·<a href="/newsletter/about.html">소개</a>·<a href="/newsletter/privacy.html">개인정보처리방침</a>

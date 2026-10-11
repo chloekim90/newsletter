@@ -21,6 +21,22 @@ PREFIX = CFG.get("path_prefix", "").rstrip("/")  # 프로젝트 Pages면 "/newsl
 WD = "월화수목금토일"
 
 
+def subscribe():
+    sub = CFG.get("subscribe")
+    if not sub:
+        return ""
+    return f"""<section class="sub" id="subscribe">
+<h2>📮 매일 아침 메일로 받아보기</h2>
+<p>평일 아침, 새 호가 나오면 메일로 보내 드려요.</p>
+<form action="{sub['action']}" method="POST" target="sub-sink" onsubmit="var f=this;setTimeout(function(){{f.hidden=true;document.getElementById('sub-done').hidden=false}},400)">
+<div class="sub-row"><input type="email" name="{sub['entry']}" placeholder="이메일 주소" required autocomplete="email" aria-label="이메일 주소"><button type="submit">구독하기</button></div>
+<label class="sub-agree"><input type="checkbox" required> 뉴스레터 발송을 위해 이메일 주소를 수집·이용하는 데 동의합니다. 구독 해지 시까지 보관하며, <a href="{PREFIX}/privacy.html">개인정보처리방침</a>을 따릅니다.</label>
+</form>
+<p id="sub-done" class="sub-done" hidden>구독 신청이 접수됐어요. 고마워요 🍊</p>
+<iframe name="sub-sink" title="구독 신청 전송" hidden></iframe>
+</section>"""
+
+
 def part(name):
     p = ROOT / "partials" / name
     return p.read_text(encoding="utf-8").strip() if p.exists() else ""
@@ -96,7 +112,7 @@ def rebuild():
         pager = '<div class="pager">' + \
             (f'<a href="{PREFIX}/posts/{older}.html">← 이전 호</a>' if older else "<span></span>") + \
             (f'<a href="{PREFIX}/posts/{newer}.html">다음 호 →</a>' if newer else "<span></span>") + "</div>"
-        body = f'<div class="ad">{part("ad-top.html")}</div>\n<main class="post">\n{content}\n</main>\n{pager}\n<div class="ad">{part("ad-bottom.html")}</div>'
+        body = f'<div class="ad">{part("ad-top.html")}</div>\n<main class="post">\n{content}\n</main>\n{pager}\n{subscribe()}\n<div class="ad">{part("ad-bottom.html")}</div>'
         (ROOT / "posts" / f"{d}.html").write_text(
             shell(f'{p["title"]} | {SITE_NAME}', p.get("summary") or p["title"], f"/posts/{d}.html", body),
             encoding="utf-8")
@@ -113,7 +129,7 @@ def rebuild():
     else:
         listing = '<div class="empty">첫 호가 곧 올라와요.</div>'
     body = f'<main class="wrap"><section class="hero"><h1>지난 호</h1><p>{SITE_DESC}</p></section>\n' \
-           f'<div class="ad">{part("ad-top.html")}</div>\n{listing}</main>'
+           f'<div class="ad">{part("ad-top.html")}</div>\n{listing}</main>\n{subscribe()}'
     (ROOT / "archive.html").write_text(shell(f"지난 호 | {SITE_NAME}", SITE_DESC, "/archive.html", body), encoding="utf-8")
     if not posts:
         (ROOT / "index.html").write_text(shell(SITE_NAME, SITE_DESC, "/", body), encoding="utf-8")

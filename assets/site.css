@@ -25,3 +25,12 @@ a{color:var(--orange)}
 .pager a{text-decoration:none;font-weight:600}
 .site-foot{max-width:640px;margin:0 auto;padding:24px 16px 40px;font-size:13px;color:var(--muted);text-align:center}
 .site-foot a{color:var(--muted);margin:0 6px}
+.sub{max-width:608px;margin:24px auto 8px;padding:20px 18px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.sub h2{font-size:18px;margin:0 0 4px}
+.sub p{margin:0 0 12px;font-size:14px;color:var(--muted)}
+.sub-row{display:flex;gap:8px}
+.sub-row input{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit}
+.sub-row button{padding:12px 18px;border:0;border-radius:12px;background:var(--orange);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+.sub-agree{display:block;margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}
+.sub-done{margin:0!important;color:var(--ink)!important;font-weight:600}
+@media(max-width:640px){.sub{margin-left:16px;margin-right:16px}}

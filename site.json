@@ -1,4 +1,8 @@
 {
  "base_url": "https://chloekim90.github.io",
- "path_prefix": "/newsletter"
+ "path_prefix": "/newsletter",
+ "subscribe": {
+  "action": "https://docs.google.com/forms/d/e/1FAIpQLSdNTGbedwztG0ilvurKCAuN6dsstf3iJfuM4GpcSY1Y450Z3A/formResponse",
+  "entry": "entry.1234987478"
+ }
 }
